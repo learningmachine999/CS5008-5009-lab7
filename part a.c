@@ -1,83 +1,81 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-// Function to convert an integer to binary representation
-int convertToBinary(int num) {
-    int binary = 0, base = 1;
-    while (num > 0) {
-        binary += (num % 2) * base;
-        num /= 2;
-        base *= 10;
+typedef struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
     }
-    return binary;
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
 }
 
-// Function to convert binary representation to integer
-int convertToInteger(int binary) {
-    int num = 0, base = 1;
-    while (binary > 0) {
-        num += (binary % 10) * base;
-        binary /= 10;
-        base *= 2;
-    }
-    return num;
+void preorderTraversal(Node* root) {
+    if (root == NULL)
+        return;
+
+    printf("%d ", root->data);
+    preorderTraversal(root->left);
+    preorderTraversal(root->right);
 }
 
-// Function to perform linear search on the array
-int linearSearch(int arr[], int n, int target) {
-    for (int i = 0; i < n; i++) {
-        if (arr[i] == target) {
-            return i;
-        }
-    }
-    return -1;
+void inorderTraversal(Node* root) {
+    if (root == NULL)
+        return;
+
+    inorderTraversal(root->left);
+    printf("%d ", root->data);
+    inorderTraversal(root->right);
+}
+
+void postorderTraversal(Node* root) {
+    if (root == NULL)
+        return;
+
+    postorderTraversal(root->left);
+    postorderTraversal(root->right);
+    printf("%d ", root->data);
 }
 
 int main() {
-    int size;
-    printf("Input array size: ");
-    scanf("%d", &size);
+    Node* root = createNode(1);
+    root->left = createNode(2);
+    root->right = createNode(3);
+    root->left->left = createNode(4);
+    root->left->right = createNode(5);
+    root->left->left->left = createNode(8);
+    root->left->left->right = createNode(9);
+    root->left->right->left = createNode(10);
+    root->left->right->right = createNode(11);
+    root->right->left = createNode(6);
+    root->right->right = createNode(7);
+    root->right->left->left = createNode(12);
+    root->right->left->right = createNode(13);
+    root->right->right->left = createNode(14);
+    root->right->right->right = createNode(15);
 
-    int array[size];
+    printf("Preorder: \n");
+    preorderTraversal(root);
+    printf("\n");
 
-    printf("Input elements of the array:\n");
-    for (int i = 0; i < size; i++) {
-        scanf("%d", &array[i]);
-    }
+    printf("Inorder: \n");
+    inorderTraversal(root);
+    printf("\n");
 
-    int target;
-    printf("Input target: ");
-    scanf("%d", &target);
+    printf("Postorder: \n");
+    postorderTraversal(root);
+    printf("\n");
 
-    printf("\nThe array:\n");
-    for (int i = 0; i < size; i++) {
-        printf("%d ", array[i]);
-    }
-
-    printf("\n\nThe target:\n%d\n", target);
-
-    printf("\nConverted array:\n");
-    for (int i = 0; i < size; i++) {
-        int converted = convertToBinary(array[i]);
-        printf("%d ", converted);
-        array[i] = converted;
-    }
-
-    int convertedTarget = convertToBinary(target);
-    printf("\n\nConverted target:\n%d\n", convertedTarget);
-
-    int result = linearSearch(array, size, convertedTarget);
-
-    printf("\nSearch result:\n%d\n", result);
-
-    printf("\nOriginal array:\n");
-    for (int i = 0; i < size; i++) {
-        int original = convertToInteger(array[i]);
-        printf("%d ", original);
-        array[i] = original;
-    }
-
-    int originalTarget = convertToInteger(convertedTarget);
-    printf("\n\nOriginal target:\n%d\n", originalTarget);
+    free(root);
 
     return 0;
 }
